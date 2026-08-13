@@ -1,7 +1,7 @@
-from Base_Controller import Base_controller
-from ..models.enums.Project_Enum import Project_Enum
+from Controllers.Base_Controller import Base_controller
+from models.enums.Project_Enum import Project_Enum
 from fastapi import UploadFile
-from .File_Controller import File_controller
+from Controllers.File_Controller import File_controller
 import re
 import os
 import uuid
@@ -31,9 +31,9 @@ class Data_controller(Base_controller):
         return clean_file_name 
 
 
-    def generate_unique_path(self,project_id:str,file_name:str):
+    def generate_unique_path(self,file_id:str,file_name:str):
 
-        project_path = File_controller.get_uploaded_file_path(project_id=project_id)
+        project_path = File_controller.get_uploaded_file_path(project_id=file_id)
         clened_file_name = self.get_clean_file_name(file_name=file_name)
         unique_id = uuid.uuid4
 
@@ -49,5 +49,5 @@ class Data_controller(Base_controller):
             unique_id,
             clened_file_name
             )
-
-        return  unique_path
+    #   file_id = unique_id + clened_file_name,
+        return  unique_path, unique_id + "_" + clened_file_name

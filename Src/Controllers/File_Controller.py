@@ -1,5 +1,5 @@
-from Base_Controller import Base_controller
-from ..Helper_Function.config import config,load_config
+from Controllers.Base_Controller import Base_controller
+from Helper_Function.config import config, load_config
 import os
 
 
