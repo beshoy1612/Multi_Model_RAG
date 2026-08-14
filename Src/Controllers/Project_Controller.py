@@ -3,7 +3,7 @@ from Helper_Function.config import config, load_config
 import os
 
 
-class File_controller(Base_controller):
+class Project_Controller(Base_controller):
     def __init__(self):
         super().__init__()
 

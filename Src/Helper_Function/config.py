@@ -6,6 +6,7 @@ class config(BaseSettings):
     APP_VERSION :str
     FILES_VALID_CONTENT_TYPE :list
     FILE_VALID_SIZE:int
+    FILE_CHUNK_SIZE:int
     #SettingsConfigDict tells Pydantic where and how to load environment variables
     # we must call same varaible name
 

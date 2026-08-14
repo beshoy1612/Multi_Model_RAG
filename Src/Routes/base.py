@@ -1,4 +1,4 @@
-from Helper_Function.config import config , load_config
+from Helper_Function import config , load_config
 from fastapi import FastAPI, APIRouter, Depends
 
 base_app = APIRouter(
