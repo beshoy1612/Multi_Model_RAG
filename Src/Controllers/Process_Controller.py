@@ -1,9 +1,11 @@
-from Controllers import Base_Controller,Project_Controller
+from Controllers.Base_Controller import Base_controller
+from Controllers.Project_Controller import Project_Controller
 from langchain_community.document_loaders import TextLoader
-from langchain_community.document_loaders import PyMuPdfLoader
+# from langchain_community.document_loaders import PyMuPdfLoader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
 import os
 
-class Process_Controller(Base_Controller):
+class Process_Controller(Base_controller):
     def __init__(self):
         super().__init__()
 
@@ -22,3 +24,22 @@ class Process_Controller(Base_Controller):
         
         if file_ext ==".pdf":
             pass
+        return None
+
+    def get_file_content(self,file_id:str,project_id:str):
+        load_data = self.get_file_loader(file_id=file_id,project_id = project_id)
+        if load_data :
+            # return file as a list of content
+            return load_data.load()
+        return None
+
+
+    def process_file_content(self,file_content:list,chunk_size=100,overlap_size=20):
+        text_splitter = RecursiveCharacterTextSplitter(
+            chunk_size = chunk_size,
+            chunk_overlap = overlap_size,
+            length_function = len
+        )
+        chunks = text_splitter.split_documents(file_content)
+
+        return chunks

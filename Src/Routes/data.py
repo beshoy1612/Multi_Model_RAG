@@ -1,7 +1,7 @@
 from fastapi import FastAPI,APIRouter,Depends,UploadFile,status
 from Helper_Function import config , load_config
 from fastapi.responses import JSONResponse
-from Controllers import Data_controller
+from Controllers import Data_controller,Process_Controller
 from models import Project_Enum
 from logging import Logger
 # log = Logger.error("")
@@ -42,3 +42,45 @@ async def upload(project_id:str,uploded_file:UploadFile,settings : config = Depe
                "file_path":file_path
             }
          )
+
+@data_route.post("Process_file/{project_id}/{file_id}")
+async def process_file(project_id:str,file_id:str):
+   Process_Control = Process_Controller()
+   file_content = Process_Control.get_file_content(file_id=file_id,project_id=project_id)
+
+   if not file_content:
+      return JSONResponse(
+         status_code=status.HTTP_400_BAD_REQUEST,
+         content={
+            "signal":[
+               Project_Enum.PROCESSING_FAILED.value,
+               Project_Enum.File_NOT_FOUND_OR_COULD_NOT_BE_LOADED.value
+                      ]
+         }
+      )
+   file_chunks = Process_Control.process_file_content(file_content=file_content)
+
+   if not file_chunks:
+      return JSONResponse(
+         status_code=status.HTTP_400_BAD_REQUEST,
+         content={
+               "signal": [
+                  Project_Enum.PROCESSING_FAILED.value,
+                  Project_Enum.FILE_COULD_NOT_BE_SPLIT.value
+               ]
+         }
+      )
+   
+   return JSONResponse(
+      content={
+         "signal": Project_Enum.PROCESSING_SUCCESS.value,
+         "chunks_count": len(file_chunks),
+         "chunks": [
+               {
+                  "content": chunk.page_content,
+                  "metadata": chunk.metadata
+               }
+               for chunk in file_chunks
+         ]
+      }
+   )
