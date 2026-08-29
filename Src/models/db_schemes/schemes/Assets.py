@@ -1,11 +1,11 @@
-from .multi_rag_base import SQLalchemy_base
-from sqlalchemy import Column,Integer,DateTime,func,String,JSONB,ForeignKey
-from sqlalchemy.dialects.postgresql import UUID
+from .multi_rag_base import SQLAlchemyBase
+from sqlalchemy import Column,Integer,DateTime,func,String,ForeignKey
+from sqlalchemy.dialects.postgresql import UUID,JSONB
 from sqlalchemy.orm import relationship
 from sqlalchemy import Index
 import uuid
 
-class Assets(SQLalchemy_base):
+class Assets(SQLAlchemyBase):
     #first thing in database is to define your tables
     __tablename__ = "Assets"
     

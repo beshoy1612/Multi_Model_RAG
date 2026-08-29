@@ -1,9 +1,9 @@
-from .multi_rag_base import SQLalchemy_base
+from .multi_rag_base import SQLAlchemyBase
 from sqlalchemy import Column,Integer,DateTime,func
 from sqlalchemy.dialects.postgresql import UUID
 import uuid
 
-class Project(SQLalchemy_base):
+class Project(SQLAlchemyBase):
     #first thing in database is to define your tables
     __tablename__ = "Projects"
     Projcet_id = Column(Integer,primary_key=True,autoincrement=True)

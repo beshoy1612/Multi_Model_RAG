@@ -1,11 +1,11 @@
-from .multi_rag_base import SQLalchemy_base
-from sqlalchemy import Column,Integer,DateTime,func,String,JSONB,ForeignKey
-from sqlalchemy.dialects.postgresql import UUID
+from .multi_rag_base import SQLAlchemyBase
+from sqlalchemy import Column,Integer,DateTime,func,String,ForeignKey
+from sqlalchemy.dialects.postgresql import UUID,JSONB
 from sqlalchemy.orm import relationship
 from sqlalchemy import Index
 import uuid
 
-class Data_chunk(SQLalchemy_base):
+class Data_chunk(SQLAlchemyBase):
     #first thing in database is to define your tables
     __tablename__ = "Chunks"
     
@@ -31,8 +31,8 @@ class Data_chunk(SQLalchemy_base):
     # we want to create index for asset_project_id to get project_id from assets without using loop
     # creatning index for columns that doesnt have unique value beacause postgress create default index for (primary or unique)
     __table_args__ = (
-        Index("ix_asset_project_id",Chunk_project_id),
-        Index("ix_asset_type",Chunk_assets_id),
+        Index("ix_Chunk_project_id",Chunk_project_id),
+        Index("ix_Chunk_assets_id",Chunk_assets_id),
     )
 
     
