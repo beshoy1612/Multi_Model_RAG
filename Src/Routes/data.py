@@ -9,7 +9,7 @@ data_route = APIRouter(
     prefix="/data"
 )
 @data_route.post("/upload/{project_id}")
-async def upload(project_id:str,uploded_file:UploadFile,settings : config = Depends(load_config)):
+async def upload(project_id:int,uploded_file:UploadFile,settings : config = Depends(load_config)):
    
    is_success,signal = Data_controller().validate_project_files(file=uploded_file)
 
@@ -44,7 +44,7 @@ async def upload(project_id:str,uploded_file:UploadFile,settings : config = Depe
          )
 
 @data_route.post("Process_file/{project_id}/{file_id}")
-async def process_file(project_id:str,file_id:str):
+async def process_file(project_id:int,file_id:str):
    Process_Control = Process_Controller()
    file_content = Process_Control.get_file_content(file_id=file_id,project_id=project_id)
 
