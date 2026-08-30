@@ -2,6 +2,7 @@ from .Base_model import Base_model
 from db_schemes import Project
 from sqlalchemy.future import select
 from sqlalchemy import func
+
 class Project_model(Base_model):
     def __init__(self, db_client :object):
         super().__init__(db_client = db_client)
@@ -54,5 +55,5 @@ class Project_model(Base_model):
 
             query = select(Project).offset((page - 1 ) + page_size).limit(page_size)
             projects = await session.execute(query).scalar().all()
-            
+
             return projects,total_pages 
