@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import create_async_engine,AsyncSession
 from sqlalchemy.orm import sessionmaker 
 
 app =FastAPI()
-@app.on_event("start_up")
+@app.on_event("startup")
 async def startup_app():
     settings = load_config()
     postgres_conn = f"postgresql+asyncpg://{settings.POSTGRES_USERNAME}:{settings.POSTGRES_PASSWORD}@{settings.POSTGRES_HOST}:{settings.POSTGRES_PORT}/{settings.POSTGRES_MAIN_DATABASE}"

@@ -1,15 +1,22 @@
-from fastapi import FastAPI,APIRouter,Depends,UploadFile,status
+from fastapi import FastAPI,APIRouter,Depends,UploadFile,status,Request
 from Helper_Function import config , load_config
 from fastapi.responses import JSONResponse
 from Controllers import Data_controller,Process_Controller
 from models import Project_Enum
 from logging import Logger
+from models import Project_model,Chunk_model,Asset_model,Base_model
+
 # log = Logger.error("")
 data_route = APIRouter(
     prefix="/data"
 )
 @data_route.post("/upload/{project_id}")
-async def upload(project_id:int,uploded_file:UploadFile,settings : config = Depends(load_config)):
+async def upload(request:Request,project_id:str,uploded_file:UploadFile,settings : config = Depends(load_config)):
+
+   project_model = Project_model( db_client = request.app.db_client)
+   Project = await project_model.get_project_or_create_one(project_id = int(project_id))
+
+   
    
    is_success,signal = Data_controller().validate_project_files(file=uploded_file)
 
@@ -44,9 +51,12 @@ async def upload(project_id:int,uploded_file:UploadFile,settings : config = Depe
          )
 
 @data_route.post("Process_file/{project_id}/{file_id}")
-async def process_file(project_id:int,file_id:str):
+async def process_file(request:Request,project_id:str,file_id:str):
+
+
+
    Process_Control = Process_Controller()
-   file_content = Process_Control.get_file_content(file_id=file_id,project_id=project_id)
+   file_content = Process_Control.get_file_content(file_id=file_id,project_id=int(project_id))
 
    if not file_content:
       return JSONResponse(

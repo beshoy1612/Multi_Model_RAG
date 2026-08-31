@@ -1,5 +1,5 @@
 from .Base_model import Base_model
-from db_schemes import Data_chunk
+from .db_schemes import Data_chunk
 from sqlalchemy.future import select
 from sqlalchemy import func,delete
 from bson.objectid import ObjectId

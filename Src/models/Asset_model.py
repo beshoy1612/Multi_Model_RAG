@@ -1,5 +1,5 @@
 from .Base_model import Base_model
-from db_schemes import Assets
+from .db_schemes import Assets
 from sqlalchemy.future import select
 from sqlalchemy import func,delete
 class Asset_model(Base_model):

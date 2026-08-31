@@ -21,14 +21,21 @@ class Assets(SQLAlchemyBase):
     #can store json file in postgres unlike mongodb(not supported json) we used dict  
     #we used jsonb not json because it has low latency when read 
     Asset_config = Column(JSONB,nullable=True) # dict store metadata of file in mongob but in postgress(json)
-
+ 
     #forignkey(name of table.name of column)
     Asset_project_id = Column(Integer,ForeignKey("Projects.Projcet_id"),nullable=False)
 
     #we need to make relation between ForeignKey key and primary key to back_populates data from primary to Foreign
-    Project = relationship("Projects",back_populates="Assets")
-    Chunks = relationship("Data_chunk",back_populates="Assets")
+    Project = relationship(
+        "Project",
+        back_populates="Assets"
+    )
 
+    Chunks = relationship(
+        "Data_chunk",
+        back_populates="Assets"
+    )
+    
     # if we have ForeignKey then ===>  must create index to make retrive eaiser
     # we want to create index for asset_project_id to get project_id from assets without using loop
     # creatning index for columns that doesnt have unique value beacause postgress create default index for (primary or unique)

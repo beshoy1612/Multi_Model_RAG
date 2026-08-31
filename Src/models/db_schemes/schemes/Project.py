@@ -3,7 +3,7 @@ from sqlalchemy import Column,Integer,DateTime,func
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 import uuid
-
+ 
 class Project(SQLAlchemyBase):
     #first thing in database is to define your tables
     __tablename__ = "Projects"
@@ -15,6 +15,12 @@ class Project(SQLAlchemyBase):
     created_at = Column(DateTime(timezone=True),server_default=func.now(),nullable=False)
     updated_at = Column(DateTime(timezone=True),onupdate=func.now(),nullable=True)
 
-    Chunks = relationship("Data_chunk",back_populates="Project")
-    Asset = relationship("Assets",back_populates="Project")
+    Chunks = relationship(
+            "Data_chunk",
+            back_populates="Project"
+        )
 
+    Assets = relationship(
+            "Assets",
+            back_populates="Project"
+        )

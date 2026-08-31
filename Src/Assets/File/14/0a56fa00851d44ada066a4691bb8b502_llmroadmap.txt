@@ -1,0 +1,81 @@
+
+1. Introduction to Large Language Models
+1.1 What Are LLMs?
+1.2 Why Learn LLMs?
+1.3 LLM Market Growth & Opportunities
+
+2. Fundamentals You Must Know
+2.1 Python Programming Essentials
+2.2 Machine Learning Basics
+2.3 Deep Learning Fundamentals
+2.4 Introduction to NLP
+2.5 Key Concepts: Tokenization, Embeddings, Attention
+
+3. Core LLM Architectures
+3.1 Transformers Architecture
+3.2 Self-Attention & Multi-Head Attention
+3.3 Positional Encoding
+3.4 Encoder-Only Models (BERT)
+3.5 Decoder-Only Models (GPT)
+3.6 Encoder–Decoder Models (T5, BART)
+3.7 Visual & Illustrated Guides to Transformers
+
+4. Hands-On with LLM Models
+4.1 Using Hugging Face Transformers
+4.2 Implementing & Fine-Tuning BERT
+4.3 Fine-Tuning GPT Models
+4.4 Pre-Training vs Fine-Tuning
+4.5 Prompting & In-Context Learning
+4.6 Few-shot, Zero-shot, Instruction Tuning
+
+5. Specializing in LLMs
+5.1 LLM Theory & Foundations
+5.2 Understanding Capabilities & Limitations
+5.3 Ethics, Safety, and Responsible AI
+5.4 Efficient Fine-Tuning (LoRA, QLoRA, Adapters)
+5.5 Model Quantization Techniques
+5.6 Career Pathways (LLM Engineer / LLM Scientist)
+
+6. Building LLM Applications
+6.1 Introduction to LangChain
+6.2 Introduction to LlamaIndex
+6.3 Prompt Engineering
+6.4 Building Chatbots
+6.5 Building Question-Answering Systems
+6.6 Semantic Search & RAG
+6.7 End-to-End LLM Projects
+6.8 Using OpenAI, Gemini, Claude, HF APIs
+
+7. Retrieval-Augmented Generation (RAG)
+7.1 Understanding RAG
+7.2 Standard, Hierarchical & Hybrid RAG
+7.3 Dense, Sparse, Hybrid Retrieval
+7.4 Embeddings Models
+7.5 Vector Databases (FAISS, Chroma, Pinecone, Weaviate)
+7.6 Scaling RAG Systems
+7.7 Enterprise RAG Best Practices
+7.8 Knowledge Graph + RAG (HybridRAG)
+
+8. LLM Deployment & LLMOps
+8.1 Local Deployment (llama.cpp, ollama, GGUF)
+8.2 Using Docker for LLM Apps
+8.3 Deploying to Cloud (AWS, Azure, GCP, HF)
+8.4 Monitoring & Observability
+8.5 Caching & Batching
+8.6 Testing, Versioning & Benchmarking
+8.7 Security & Governance
+
+9. LLM Inference Optimization
+9.1 Model Quantization (GPTQ, AWQ, 8-bit/4-bit)
+9.2 vLLM, TGI, DeepSpeed
+9.3 ONNX Runtime Optimization
+9.4 PagedAttention
+9.5 Efficient Serving & Scaling
+9.6 Edge & On-Device Inference
+
+10. Advanced Topics & Future Directions
+10.1 Multimodal LLMs (Vision, Audio, Video)
+10.2 AI Agents & Tool Use
+10.3 Knowledge Graphs with LLMs
+10.4 Memory-Augmented Models
+10.5 Emerging Architectures (MoE, RWKV, Mamba)
