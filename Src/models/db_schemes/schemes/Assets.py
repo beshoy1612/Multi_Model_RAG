@@ -27,6 +27,7 @@ class Assets(SQLAlchemyBase):
 
     #we need to make relation between ForeignKey key and primary key to back_populates data from primary to Foreign
     Project = relationship("Projects",back_populates="Assets")
+    Chunks = relationship("Data_chunk",back_populates="Assets")
 
     # if we have ForeignKey then ===>  must create index to make retrive eaiser
     # we want to create index for asset_project_id to get project_id from assets without using loop

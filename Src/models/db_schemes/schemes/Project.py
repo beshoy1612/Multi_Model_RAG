@@ -1,6 +1,7 @@
 from .multi_rag_base import SQLAlchemyBase
 from sqlalchemy import Column,Integer,DateTime,func
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship
 import uuid
 
 class Project(SQLAlchemyBase):
@@ -14,4 +15,6 @@ class Project(SQLAlchemyBase):
     created_at = Column(DateTime(timezone=True),server_default=func.now(),nullable=False)
     updated_at = Column(DateTime(timezone=True),onupdate=func.now(),nullable=True)
 
-    
+    Chunks = relationship("Data_chunk",back_populates="Project")
+    Asset = relationship("Assets",back_populates="Project")
+
