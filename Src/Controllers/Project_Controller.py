@@ -10,7 +10,7 @@ class Project_Controller(Base_controller):
     def get_uploaded_file_path(self,project_id:str):
         path_of_project = os.path.join(
             self.file_dir,
-            project_id
+            str(project_id)
         )
         # make folder for each project 
         if not os.path.exists(path_of_project):

@@ -22,11 +22,11 @@ class Asset_model(Base_model):
             await session.refresh(asset)
     
     
-    async def get_all_project_files(self,asset_project_id:str,asset_type:str):
+    async def get_all_project_files(self,asset_project_id:str,asset_name:str):
         async with self.db_client() as session:
             stmt = select(Assets).where(
                 Assets.Asset_project_id == asset_project_id,
-                Assets.Asset_type == asset_type
+                Assets.Asset_name == asset_name
             )
             result = await session.execute(stmt)
             records = result.scalar().all()
@@ -37,7 +37,7 @@ class Asset_model(Base_model):
         async with self.db_client() as session:
             stmt = select(Assets).where(
                 Assets.Asset_project_id == asset_project_id,
-                Assets.Asset_type == asset_name
+                Assets.Asset_name == asset_name
             )
             result = await session.execute(stmt)
             records = result.scalar_one_or_none()
