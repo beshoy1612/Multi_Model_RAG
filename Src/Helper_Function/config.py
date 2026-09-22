@@ -28,7 +28,12 @@ class config(BaseSettings):
     #GEMENI
     GEMINI_API_KEY :str
     default_output_max_tokens: int
-    VLM_MODEL_ID :str
+    VLM_MODEL_ID: str
+
+    # vector db config
+    VECTOR_DB: str
+    VECTOR_DB_PATH: str
+    VECTOR_DB_DISTANNCE_METHOD: str = None
 
     #SettingsConfigDict tells Pydantic where and how to load environment variables
     # we must call same varaible name
