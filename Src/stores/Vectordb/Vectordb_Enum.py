@@ -5,3 +5,7 @@ class Vectordb_Enum(Enum):
     # file base database , memory database like pinecorn, pgvector , qdrant
     # we will not find url database like mongo but we will pass path or memoery
     QDRANT = "QDRANT"
+
+class DistanceMethod(Enum):
+    COSINE = "cosine"
+    DOT = "dot"
