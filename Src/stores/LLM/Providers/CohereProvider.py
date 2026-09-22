@@ -1,9 +1,9 @@
-from LLMinterface import LLMInterface
-from LLMenum import CoHereEnum,DocumentTypeEnum
+from ..LLMinterface import LLMinterface
+from ..LLMenum import CoHereEnum,DocumentTypeEnum
 import cohere
 import logging
 
-class CoHereProvider(LLMInterface):
+class CoHereProvider(LLMinterface):
 
     def __init__(self,api_key: str,
         default_input_max_character: int = 1000,

@@ -1,9 +1,10 @@
 from Controllers.Base_Controller import Base_controller
 from Controllers.Project_Controller import Project_Controller
+from Helper_Function.config import  load_config
+from stores import GeminiVLMProvider
 from langchain_community.document_loaders import TextLoader
 # from langchain_community.document_loaders import PyMuPdfLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-
 from docling.document_converter import DocumentConverter, PdfFormatOption, InputFormat
 from docling.datamodel.pipeline_options import PdfPipelineOptions
 from docling_core.types.doc import TextItem, TableItem, PictureItem
@@ -14,6 +15,17 @@ import os
 class Process_Controller(Base_controller):
     def __init__(self):
         super().__init__()
+        pipeline_options = PdfPipelineOptions()
+        pipeline_options.generate_picture_images = True
+        settings = load_config()
+        self.vlm_provider = GeminiVLMProvider(
+            api_key=settings.GEMINI_API_KEY
+        )
+
+        self.vlm_provider.set_vlm_model(
+            model_id=settings.VLM_MODEL_ID
+        )
+
         pipeline_options = PdfPipelineOptions()
         pipeline_options.generate_picture_images = True
 
@@ -141,6 +153,36 @@ class Process_Controller(Base_controller):
 
             elif element["type"] == "picture":
 
-                pass
+                image_text = self.vlm_provider.analyze_image(
+                image=element["content"],
+                prompt="""
+                Analyze this image and extract all useful information.
+
+                If the image contains text, extract it accurately.
+
+                If it contains a table, describe its contents.
+
+                If it contains a chart, explain the chart and its
+                important values.
+
+                If it contains a diagram, explain its structure
+                and relationships.
+
+                Return the result as clear plain text suitable
+                for storage in a RAG system.
+                """
+            )
+
+            if image_text:
+
+                documents.append(
+                    Document(
+                        page_content=image_text,
+                        metadata={
+                            "content_type": "picture"
+                        }
+                    )
+                )
+
 
         return text_splitter.split_documents(documents)

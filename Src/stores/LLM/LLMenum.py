@@ -1,13 +1,8 @@
 from enum import Enum
 class LLMenum(Enum):
     #store any name of provider we will use 
-    OPENAI = "OPENAI"
     COHERE = "COHERE"
-    
-class OpenAiEnum(Enum):
-    SYSTEM = "system" 
-    USER = "user"
-    ASSISTANT = "assistant"
+    GEMENI = "GEMENI"
 
 class CoHereEnum(Enum):
     SYSTEM = "SYSTEM" 

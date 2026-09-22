@@ -1,7 +1,7 @@
 #library to help us in interface and decorator method 
 from abc import ABC,abstractmethod
 #to get architicture(structure) of class without logic 
-class LLMInterface(ABC):
+class LLMinterface(ABC):
    # IN ANY PROVIDER We HAVE 3 DIFFERENT MODEL one for embedding AND another for GENERATION,VLm 
     # (abstractmethod)decorator to force implement this function if we inherit from this class  
     @abstractmethod

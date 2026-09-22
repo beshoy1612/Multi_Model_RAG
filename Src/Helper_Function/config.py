@@ -12,6 +12,24 @@ class config(BaseSettings):
     POSTGRES_HOST:str
     POSTGRES_PORT:int
     POSTGRES_MAIN_DATABASE:str
+
+    ####### Gemeni , COHERE providers  ##########
+    
+    # COHERE
+    COHERE_API_KEY :str
+    GENERATION_MODEL_ID :str
+    EMBEDDING_MODEL_ID :str
+    EMBEDDING_MODEL_SIZE :int
+
+    default_input_max_character :int  = None
+    default_output_max_character :int  = None
+    default_generation_temprature :float  = None 
+    
+    #GEMENI
+    GEMINI_API_KEY :str
+    default_output_max_tokens: int
+    VLM_MODEL_ID :str
+
     #SettingsConfigDict tells Pydantic where and how to load environment variables
     # we must call same varaible name
 

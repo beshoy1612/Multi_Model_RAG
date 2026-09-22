@@ -1,8 +1,9 @@
-from LLMinterface import LLMinterface
+from ..LLMinterface import LLMinterface
 from google import genai
-from PIL import Image
+from google.genai import types
 
 import logging
+from io import BytesIO
 
 
 class GeminiVLMProvider(LLMinterface):
@@ -18,12 +19,10 @@ class GeminiVLMProvider(LLMinterface):
         # VLM model
         self.vlm_model_id = None
 
-
         # Initialize Gemini client
         self.client = genai.Client(
             api_key=self.api_key
         )
-
 
         self.logger = logging.getLogger(__name__)
 
@@ -32,7 +31,7 @@ class GeminiVLMProvider(LLMinterface):
     # VLM Model
     # =================================
 
-    def set_vlm_model(self,model_id: str):
+    def set_vlm_model(self, model_id: str):
 
         self.vlm_model_id = model_id
 
@@ -41,45 +40,50 @@ class GeminiVLMProvider(LLMinterface):
     # Image Analysis
     # =================================
 
-    def analyze_image(self,image,prompt: str):
-
+    def analyze_image(self,image,prompt: str,max_output_tokens: int = None):
         if not self.client:
-
             self.logger.error(
                 "Gemini client was not found"
             )
-
             return None
-
-
+        
         if not self.vlm_model_id:
-
             self.logger.error(
                 "VLM model was not found"
             )
-
             return None
-
-
+        
         try:
+            # Docling returns a PIL Image
+            image_bytes = BytesIO()
 
-            # Open image
-            image = Image.open(image)
+            image.save(
+                image_bytes,
+                format="PNG"
+            )
 
-
+            image_bytes = image_bytes.getvalue()
             response = (
                 self.client.models.generate_content(
 
                     model=self.vlm_model_id,
 
                     contents=[
-                        image,
+                        types.Part.from_bytes(
+                            data=image_bytes,
+                            mime_type="image/png"
+                        ),
                         prompt
-                    ]
+                    ],
+
+                    config=types.GenerateContentConfig(
+                        max_output_tokens=(
+                            max_output_tokens
+                            or self.default_output_max_tokens
+                        )
+                    )
                 )
             )
-
-
             if not response or not response.text:
 
                 self.logger.error(
@@ -87,15 +91,12 @@ class GeminiVLMProvider(LLMinterface):
                 )
 
                 return None
-
-
             return response.text
-
 
         except Exception as error:
 
             self.logger.error(
-                f"Error while analyzing image: {error}"
+                f"Error while analyzing image with Gemini: {error}"
             )
 
             return None
@@ -105,32 +106,46 @@ class GeminiVLMProvider(LLMinterface):
     # Unsupported Functions
     # =================================
 
-    def set_generation_model(self,model_id: str):
-        raise NotImplementedError(
-            "GeminiVLMProvider does not support text generation"
-        )
-
-
-    def set_embedding_model(self,model_id: str,embedding_size: int):
-
-        raise NotImplementedError(
-            "GeminiVLMProvider does not support embeddings"
-        )
-
-
-    def generate_text(self,prompt: str,max_output_tokens: int = None,chat_history: list = [],temperature: float = None):
+    def set_generation_model(self, model_id: str):
 
         raise NotImplementedError(
             "GeminiVLMProvider does not support text generation"
         )
 
 
-    def embed_text(self,text: str,document_type: str = None):
+    def set_embedding_model(
+        self,
+        model_id: str,
+        embedding_size: int
+    ):
 
         raise NotImplementedError(
             "GeminiVLMProvider does not support embeddings"
         )
 
+
+    def generate_text(
+        self,
+        prompt: str,
+        max_output_tokens: int = None,
+        chat_history: list = [],
+        temperature: float = None
+    ):
+
+        raise NotImplementedError(
+            "GeminiVLMProvider does not support text generation"
+        )
+
+
+    def embed_text(
+        self,
+        text: str,
+        document_type: str = None
+    ):
+
+        raise NotImplementedError(
+            "GeminiVLMProvider does not support embeddings"
+        )
 
 
     def construct_prompt(
@@ -140,8 +155,6 @@ class GeminiVLMProvider(LLMinterface):
     ):
 
         return {
-
             "role": role,
-
             "text": prompt
         }
