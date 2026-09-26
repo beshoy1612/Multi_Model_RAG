@@ -5,9 +5,11 @@ from typing import List
 import json
 
 
+#===============================================================================||
+# we will implement all logic about semantic search , retrival here !!!!!!!!    ||
+# so we will need generation_client,embadding_client,vectordb_client            ||
+#===============================================================================||
 
-# we will implement all logic about semantic search , retrival here !!!!!!!!
-# so we will need generation_client,embadding_client,vectordb_client
 class NLP_Conroller(Base_controller):
     def __init__(self,generation_client,embadding_client,vectordb_client):
         super().__init__()
@@ -68,3 +70,22 @@ class NLP_Conroller(Base_controller):
             record_id = chunk_ids,
             )
         return True
+    def search_vector_db_collection (self,project:Project ,text :str ,limit:int = 10):
+        # 1 - get collection name
+        collection_name = self.create_collection_name(project_id = project.id)
+
+        # 2 - get text embedding vector
+        vector  = self.embedding_client.embed_text(text = text,document_type = DocumentTypeEnum.QUERY.value)
+        if not vector or len(vector) == 0:
+            return False
+        
+        # 3 - do semantic search
+        result = self.vectordb_client.search_by_vector(
+            collection_name = collection_name,
+            vector = vector,
+            limit = limit
+                )
+        if not result :
+            return False
+        
+        return result

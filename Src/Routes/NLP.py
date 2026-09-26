@@ -49,7 +49,10 @@ async def index_project(request:Request,project_id:str,push_request:Push_Request
         # template_parser=request.app.template_parser
     )
 
+
     # now we will get chunk for project to push it in vector database 
+    #====================================== important part =====================================
+
     chunkmodel = await Chunk_model(db_client = request.app.db_client)
 
     is_record = True
@@ -92,3 +95,84 @@ async def index_project(request:Request,project_id:str,push_request:Push_Request
             "inserted_item_count": inserted_count
         }
     )
+
+
+#second : end point to get information about vector db 
+@nlp_router.get("/index/info/{project_id}")
+async def get_project_index_info(request:Request,project_id:str):
+    
+        project_model = await Project_model(db_client = request.app.db_client)
+    
+        project = await project_model.get_project_or_create_one(project_id = project_id)
+
+        if not project :
+            return JSONResponse(
+                status_code = status.HTTP_400_BAD_REQUEST,
+                content = {
+                    "siganl" : Project_Enum.PROJECT_NOT_FOUND_ERROR.value 
+                }
+            )
+        
+        nlpcontroller = NLP_Conroller(
+            vectordb_client = request.app.vectordb_client,
+            embedding_client = request.app.embedding_client,
+            generation_client = request.app.generation_client,
+            # template_parser=request.app.template_parser
+        )
+        collectioninfo = nlpcontroller.get_vetor_db_collection_info(project=project)
+        return JSONResponse(
+        content={
+            "signal" : Project_Enum.VECTOR_DB_COLLECTION_RETRIEVED.value,
+            "collection_info":collectioninfo         
+        }
+    )
+
+
+# third : end point to do sementic search 
+@nlp_router.post("/index/search/{project_id}")
+async def search_index(request:Request,project_id:str,search_request:Search_Request):
+
+    project_model = await Project_model.create_instance(
+    db_client = request.app.db_client
+    )
+
+    project = await project_model.get_project_or_create_one(
+        project_id = project_id
+    )
+
+    if not project :
+        return JSONResponse(
+            status_code = status.HTTP_400_BAD_REQUEST,
+            content = {
+                "siganl" : Project_Enum.PROJECT_NOT_FOUND_ERROR.value 
+            }
+        )
+    
+    nlpcontroller = NLP_Conroller(
+        vectordb_client = request.app.vectordb_client,
+        embedding_client = request.app.embedding_client,
+        generation_client = request.app.generation_client,
+        template_parser = Request.app.template_parser
+    )
+
+    result = nlpcontroller.search_vector_db_collection(
+        project = project,
+        text = search_request.text,
+        limit = search_request.limit
+    )
+    if not result:
+     return JSONResponse(
+        status_code = status.HTTP_400_BAD_REQUEST,
+        content = {
+            "siganl" : Project_Enum.VECTOR_DB_SEACH_ERROR.value 
+        }
+    )
+    return JSONResponse(
+        content = {
+            "siganl" : Project_Enum.VECTOR_DB_SEACH_SUCCESS.value ,
+            "result" : [res.dict() for res in result ]
+        }
+    ) 
+
+
+
