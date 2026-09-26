@@ -35,6 +35,8 @@ class config(BaseSettings):
     VECTOR_DB_PATH: str
     VECTOR_DB_DISTANNCE_METHOD: str = None
 
+    GENERATION_BACKEND: str
+    EMBEDDING_BACKEND: str
     #SettingsConfigDict tells Pydantic where and how to load environment variables
     # we must call same varaible name
 

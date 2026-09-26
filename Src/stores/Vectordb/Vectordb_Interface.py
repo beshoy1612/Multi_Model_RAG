@@ -54,3 +54,5 @@ class Vectordb_Interface(ABC):
     @abstractmethod
     def search_by_vector(self,collection_name: str,vector: list,limit: int):
         pass
+
+    ## adding here new search  !!!!!!!!!!!!!!=====================

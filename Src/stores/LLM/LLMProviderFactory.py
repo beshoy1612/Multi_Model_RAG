@@ -9,7 +9,7 @@ class LLMProviderFactory():
     def create(self , provider: str):
         if provider == LLMenum.GEMENI.value:
             return GeminiVLMProvider(
-                api_key = self.config.OPENAI_API_KEY,
+                api_key = self.config.GEMINI_API_KEY,
                 default_output_max_tokens =  self.config.default_output_max_tokens,
             )
 

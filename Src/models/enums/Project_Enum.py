@@ -1,5 +1,6 @@
 from enum import Enum
 
+#this class store any constant string to manage it or change from it in easy way 
 class Project_Enum(Enum):
     FILE_TYPE_NOT_SUPPORTED = "FILE_TYPE_NOT_SUPPORTED"
     FILE_SIZE_EXCEEDED = "FILE_SIZE_EXCEEDED"    
@@ -11,6 +12,8 @@ class Project_Enum(Enum):
     PROCESSING_SUCCESS = "PROCESSING_SUCCESS"
     FILE_COULD_NOT_BE_SPLIT = "FILE_COULD_NOT_BE_SPLIT"
     NO_FILE_EXIST="NO_FILE_EXIST"
-   
+    PROJECT_NOT_FOUND_ERROR="PROJECT_NOT_FOUND_ERROR"
+    INSERT_INTO_VECTOR_DB_ERROR="INSERT_INTO_VECTOR_DB_ERROR"
+    INSERT_INTO_VECTOR_DB_SUCESS="INSERT_INTO_VECTOR_DB_SUCESS"
 
 

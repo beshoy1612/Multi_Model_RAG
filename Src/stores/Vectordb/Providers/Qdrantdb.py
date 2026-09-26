@@ -1,5 +1,7 @@
 from ..Vectordb_Interface import Vectordb_Interface
 from ..Vectordb_Enum import DistanceMethod
+
+# all work will depentent in this two library =================== 
 from qdrant_client import models , QdrantClient
 from typing import List
 import logging
@@ -11,6 +13,8 @@ class Qdrantdb(Vectordb_Interface):
         self.distance_method = None
         self.client = None
 
+    # we need to add our new method Here =================================>!!!!!!!!!!!!!!!!!!!!!!!!!!
+        
         if distance_method == DistanceMethod.COSINE.value:
             self.distance_method = models.Distance.COSINE
 
@@ -24,7 +28,7 @@ class Qdrantdb(Vectordb_Interface):
         self.client = QdrantClient(path=self.db_path)
 
     def disconnect(self):
-        # Qdrant desnt has disconnect funcition so we will intiate None
+        # Qdrant doesnt has disconnect funcition so we will intiate None
         self.client = None
 
     def is_collection_existed(self, collection_name):
@@ -71,6 +75,7 @@ class Qdrantdb(Vectordb_Interface):
             collection_name=collection_name,
             records=[
                models.Record(
+                   id=[record_id],
                    vector=vector,
                    # data of vector
                    payload={
