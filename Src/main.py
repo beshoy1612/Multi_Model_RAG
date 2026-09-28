@@ -3,6 +3,7 @@ from fastapi import FastAPI,APIRouter
 from .Helper_Function import config,load_config
 from stores.LLM.LLMProviderFactory import LLMProviderFactory
 from stores.Vectordb.Vectordb_Provider_Factory import Vectordb_Provider_Factory
+from stores.LLM.KeywordSearch.KeywordSearch_Provider_Factory import KeywordSearch_Provider_Factory
 #library to mange postgres database
 #take postgres connection ==> create_async_engine
 from sqlalchemy.ext.asyncio import create_async_engine,AsyncSession   
@@ -21,6 +22,7 @@ async def startup_app():
     )
     llm_provider_factory =  LLMProviderFactory(settings)
     vectordb_provider_factory = Vectordb_Provider_Factory(settings)
+    keyword_search_provider_factory = KeywordSearch_Provider_Factory(settings)
 
     #generation client 
     app.generation_client = llm_provider_factory.create(provider=settings.GENERATION_BACKEND)
@@ -40,6 +42,10 @@ async def startup_app():
         model_id=settings.RERANKER_MODEL_ID
     )
 
+    # Keyword Search client
+    app.keyword_search_client = keyword_search_provider_factory.create(
+        provider=settings.KEYWORD_SEARCH_BACKEND
+    )
     #vectordb_client
     app.vectordb_client = vectordb_provider_factory.create(provider= settings.VECTOR_DB)
     app.vectordb_client.connect()

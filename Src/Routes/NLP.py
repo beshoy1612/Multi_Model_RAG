@@ -132,7 +132,7 @@ async def get_project_index_info(request:Request,project_id:str):
 @nlp_router.post("/index/search/{project_id}")
 async def search_index(request:Request,project_id:str,search_request:Search_Request):
 
-    project_model = await Project_model.create_instance(
+    project_model = await Project_model(
     db_client = request.app.db_client
     )
 

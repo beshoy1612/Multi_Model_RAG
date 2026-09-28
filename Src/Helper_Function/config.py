@@ -36,6 +36,10 @@ class config(BaseSettings):
     VECTOR_DB_PATH: str
     VECTOR_DB_DISTANNCE_METHOD: str = None
 
+    #KEYWORD_SEARCH_BACKEND
+    
+    KEYWORD_SEARCH_BACKEND: str
+
     GENERATION_BACKEND: str
     EMBEDDING_BACKEND: str
     RERANK_BACKEND: str
