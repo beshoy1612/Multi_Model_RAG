@@ -43,9 +43,11 @@ async def index_project(request:Request,project_id:str,push_request:Push_Request
             }
         )
     nlpcontroller = NLP_Controller(
-        vectordb_client = request.app.vectordb_client,
-        embedding_client = request.app.embedding_client,
-        generation_client = request.app.generation_client,
+        vectordb_client=request.app.vectordb_client,
+        embedding_client=request.app.embedding_client,
+        generation_client=request.app.generation_client,
+        reranker_client=request.app.reranker_client,
+        keyword_search_client=request.app.keyword_search_client,
         # template_parser=request.app.template_parser
     )
 
@@ -89,6 +91,20 @@ async def index_project(request:Request,project_id:str,push_request:Push_Request
             )
         inserted_count+= len(page_chunks)
 
+        is_keyword_inserted = nlpcontroller.index_into_keyword_search(
+            project=project,
+            chunk=page_chunks,
+            chunk_ids=chunk_id
+        )
+
+        if not is_keyword_inserted:
+            return JSONResponse(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                content={
+                    "signal": Project_Enum.INSERT_INTO_KEYWORD_SEARCH_ERROR.value
+                }
+            )
+        
     return JSONResponse(
         content={
             "signal" : Project_Enum.INSERT_INTO_VECTOR_DB_SUCESS.value,
@@ -114,9 +130,11 @@ async def get_project_index_info(request:Request,project_id:str):
             )
         
         nlpcontroller = NLP_Controller(
-            vectordb_client = request.app.vectordb_client,
-            embedding_client = request.app.embedding_client,
-            generation_client = request.app.generation_client,
+            vectordb_client=request.app.vectordb_client,
+            embedding_client=request.app.embedding_client,
+            generation_client=request.app.generation_client,
+            reranker_client=request.app.reranker_client,
+            keyword_search_client=request.app.keyword_search_client
             # template_parser=request.app.template_parser
         )
         collectioninfo = nlpcontroller.get_vetor_db_collection_info(project=project)
@@ -149,17 +167,20 @@ async def search_index(request:Request,project_id:str,search_request:Search_Requ
         )
     
     nlpcontroller = NLP_Controller(
-        vectordb_client = request.app.vectordb_client,
-        embedding_client = request.app.embedding_client,
-        generation_client = request.app.generation_client,
-        template_parser = Request.app.template_parser
+        vectordb_client=request.app.vectordb_client,
+        embedding_client=request.app.embedding_client,
+        generation_client=request.app.generation_client,
+        reranker_client=request.app.reranker_client,
+        keyword_search_client=request.app.keyword_search_client
+        # template_parser = Request.app.template_parser
     )
 
-    result = nlpcontroller.search_vector_db_collection(
-        project = project,
-        text = search_request.text,
-        limit = search_request.limit
+    result = await nlpcontroller.hybrid_search(
+        project=project,
+        query=search_request.text,
+        limit=search_request.limit
     )
+
     if not result:
      return JSONResponse(
         status_code = status.HTTP_400_BAD_REQUEST,
@@ -167,6 +188,7 @@ async def search_index(request:Request,project_id:str,search_request:Search_Requ
             "siganl" : Project_Enum.VECTOR_DB_SEACH_ERROR.value 
         }
     )
+
     return JSONResponse(
         content = {
             "siganl" : Project_Enum.VECTOR_DB_SEACH_SUCCESS.value ,

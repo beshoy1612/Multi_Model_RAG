@@ -113,48 +113,41 @@ class GeminiVLMProvider(LLMinterface):
         )
 
 
-    def set_embedding_model(
-        self,
-        model_id: str,
-        embedding_size: int
-    ):
+    def set_embedding_model(self,model_id: str,embedding_size: int):
 
         raise NotImplementedError(
             "GeminiVLMProvider does not support embeddings"
         )
 
 
-    def generate_text(
-        self,
-        prompt: str,
-        max_output_tokens: int = None,
-        chat_history: list = [],
-        temperature: float = None
-    ):
+    def generate_text(self,prompt: str,max_output_tokens: int = None,chat_history: list = [],temperature: float = None):
 
         raise NotImplementedError(
             "GeminiVLMProvider does not support text generation"
         )
 
 
-    def embed_text(
-        self,
-        text: str,
-        document_type: str = None
-    ):
+    def embed_text(self,text: str,document_type: str = None):
 
         raise NotImplementedError(
             "GeminiVLMProvider does not support embeddings"
         )
 
 
-    def construct_prompt(
-        self,
-        prompt: str,
-        role: str
-    ):
+    def construct_prompt(self,prompt: str,role: str):
 
         return {
             "role": role,
             "text": prompt
         }
+
+
+    def set_rerank_model(self, model_id: str):
+        raise NotImplementedError(
+            "GeminiVLMProvider does not support rerank"
+        )
+    
+    def rerank(self,query: str,documents: list, limit: int):
+         raise NotImplementedError(
+            "GeminiVLMProvider does not support rerank"
+        )       

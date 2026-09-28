@@ -198,7 +198,9 @@ class NLP_Controller(Base_controller):
 
         return rerank_results
 
-
+    # this function  has all logic about search_keyword_search_collection & search_vector_db_collection
+    # and RRF & RERANK  and we will call it in NLP route
+    
     async def hybrid_search(self,project: Project,query: str,limit: int = 5):
         # 1. Vector Search
         vector_results = self.search_vector_db_collection(
