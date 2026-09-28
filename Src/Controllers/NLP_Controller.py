@@ -10,7 +10,7 @@ import json
 # so we will need generation_client,embadding_client,vectordb_client            ||
 #===============================================================================||
 
-class NLP_Conroller(Base_controller):
+class NLP_Controller(Base_controller):
     def __init__(self,generation_client,embadding_client,vectordb_client):
         super().__init__()
         self.generation_client = generation_client
@@ -70,6 +70,8 @@ class NLP_Conroller(Base_controller):
             record_id = chunk_ids,
             )
         return True
+
+    
     def search_vector_db_collection (self,project:Project ,text :str ,limit:int = 10):
         # 1 - get collection name
         collection_name = self.create_collection_name(project_id = project.id)

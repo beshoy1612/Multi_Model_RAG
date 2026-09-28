@@ -20,7 +20,8 @@ class config(BaseSettings):
     GENERATION_MODEL_ID :str
     EMBEDDING_MODEL_ID :str
     EMBEDDING_MODEL_SIZE :int
-
+    RERANKER_MODEL_ID :str
+    
     default_input_max_character :int  = None
     default_output_max_character :int  = None
     default_generation_temprature :float  = None 
@@ -37,6 +38,7 @@ class config(BaseSettings):
 
     GENERATION_BACKEND: str
     EMBEDDING_BACKEND: str
+    RERANK_BACKEND: str
     #SettingsConfigDict tells Pydantic where and how to load environment variables
     # we must call same varaible name
 

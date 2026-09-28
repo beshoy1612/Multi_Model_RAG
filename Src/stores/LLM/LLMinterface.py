@@ -31,6 +31,15 @@ class LLMinterface(ABC):
     def analyze_image(self,image,prompt: str, max_output_tokens: int = None):
         pass
 
+
+    @abstractmethod
+    def set_rerank_model(self, model_id: str):
+        pass
+
+    @abstractmethod
+    def rerank(self,query: str,documents: list,limit: int) -> list:
+        pass
+
      #to make prompt in generate text has deatiled format for each llms 
      # before use generate text function على حسب ال llm provider 
      # classify prompt if it from user or sys_message 

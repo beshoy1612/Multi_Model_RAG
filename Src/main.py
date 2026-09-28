@@ -31,6 +31,15 @@ async def startup_app():
     app.embadding_client.set_embedding_model(model_id= settings.EMBEDDING_MODEL_ID,
                                              embedding_size=settings.EMBEDDING_MODEL_SIZE)
 
+    # Reranker client
+    app.reranker_client = llm_provider_factory.create(
+        provider=settings.RERANK_BACKEND
+    )
+
+    app.reranker_client.set_rerank_model(
+        model_id=settings.RERANKER_MODEL_ID
+    )
+
     #vectordb_client
     app.vectordb_client = vectordb_provider_factory.create(provider= settings.VECTOR_DB)
     app.vectordb_client.connect()

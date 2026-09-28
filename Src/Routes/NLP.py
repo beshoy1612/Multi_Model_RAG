@@ -1,7 +1,7 @@
 from fastapi import FastAPI, APIRouter,Depends,UploadFile,status,Request
 from fastapi.responses import JSONResponse
 from models.Project_model import Project_model
-from Controllers import NLP_Conroller
+from Controllers import NLP_Controller
 from models import Project_Enum
 from models.Chunk_model import Chunk_model
 from typing import Optional
@@ -42,7 +42,7 @@ async def index_project(request:Request,project_id:str,push_request:Push_Request
                 "siganl" : Project_Enum.PROJECT_NOT_FOUND_ERROR.value 
             }
         )
-    nlpcontroller = NLP_Conroller(
+    nlpcontroller = NLP_Controller(
         vectordb_client = request.app.vectordb_client,
         embedding_client = request.app.embedding_client,
         generation_client = request.app.generation_client,
@@ -113,7 +113,7 @@ async def get_project_index_info(request:Request,project_id:str):
                 }
             )
         
-        nlpcontroller = NLP_Conroller(
+        nlpcontroller = NLP_Controller(
             vectordb_client = request.app.vectordb_client,
             embedding_client = request.app.embedding_client,
             generation_client = request.app.generation_client,
@@ -148,7 +148,7 @@ async def search_index(request:Request,project_id:str,search_request:Search_Requ
             }
         )
     
-    nlpcontroller = NLP_Conroller(
+    nlpcontroller = NLP_Controller(
         vectordb_client = request.app.vectordb_client,
         embedding_client = request.app.embedding_client,
         generation_client = request.app.generation_client,

@@ -21,6 +21,7 @@ class CoHereProvider(LLMinterface):
         #we need it in vector_db when we store it
         # so ----->
         self.embedding_size = None
+        self.RERANKER_MODEL_ID = None
 
         # intilaize client to deal with COHERE ai 
         self.client = cohere.Client(api_key = self.api_key)
@@ -38,6 +39,13 @@ class CoHereProvider(LLMinterface):
         self.embedding_size = embedding_size
 
 
+    def set_vlm_model(self, model_id: str):
+        raise NotImplementedError(
+            "CohereProvider does not support VLM models"
+        )
+
+    def set_rerank_model(self, model_id: str):
+        self.RERANKER_MODEL_ID = model_id
 
     def process_text(self,text: str):
       return text[:self.default_input_max_character].strip()
@@ -102,18 +110,23 @@ class CoHereProvider(LLMinterface):
         return response.embeddings.float[0]
 
 
-    def set_vlm_model(self, model_id: str):
-        raise NotImplementedError(
-            "CohereProvider does not support VLM models"
-        )
-
 
     def analyze_image(self,image,prompt: str,max_output_tokens: int = None):
         raise NotImplementedError(
             "CohereProvider does not support image analysis"
         )
 
+    def rerank(self,query: str,documents: list, limit: int):
+        response = self.client.rerank(
+            model=self.RERANKER_MODEL_ID,
+            query=query,
+            documents=documents,
+            top_n=limit
+        )
 
+        return response.results
+
+    
     def construct_prompt(self,prompt: str,role: str):
         return{
             "role" : role,
