@@ -3,7 +3,7 @@ from typing import List
 class Vectordb_Interface(ABC):
 
     # in any connection in database we must create 2 important function ===> (connect & disconnect)
-    #   we deal with it like no_sql database collection not tables  
+    # we deal with it like no_sql database collection not tables  
     # it store data in vetcor
     @abstractmethod
     def connect(self):
@@ -55,4 +55,3 @@ class Vectordb_Interface(ABC):
     def search_by_vector(self,collection_name: str,vector: list,limit: int):
         pass
 
-    ## adding here new search  !!!!!!!!!!!!!!=====================
