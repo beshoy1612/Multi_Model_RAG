@@ -16,18 +16,19 @@ class Process_Controller(Base_controller):
     def __init__(self):
         super().__init__()
         pipeline_options = PdfPipelineOptions()
-        pipeline_options.generate_picture_images = True
+        # pipeline_options.generate_picture_images = True
         settings = load_config()
-        self.vlm_provider = GeminiVLMProvider(
-            api_key=settings.GEMINI_API_KEY
-        )
 
-        self.vlm_provider.set_vlm_model(
-            model_id=settings.VLM_MODEL_ID
-        )
+        # self.vlm_provider = GeminiVLMProvider(
+        #     api_key=settings.GEMINI_API_KEY
+        # )
+
+        # self.vlm_provider.set_vlm_model(
+        #     model_id=settings.VLM_MODEL_ID
+        # )
 
         pipeline_options = PdfPipelineOptions()
-        pipeline_options.generate_picture_images = True
+        # pipeline_options.generate_picture_images = True
 
         self.converter = DocumentConverter(
             format_options={
@@ -151,38 +152,38 @@ class Process_Controller(Base_controller):
                     )
                 )
 
-            elif element["type"] == "picture":
+            # elif element["type"] == "picture":
 
-                image_text = self.vlm_provider.analyze_image(
-                image=element["content"],
-                prompt="""
-                Analyze this image and extract all useful information.
+            #     image_text = self.vlm_provider.analyze_image(
+            #     image=element["content"],
+            #     prompt="""
+            #     Analyze this image and extract all useful information.
 
-                If the image contains text, extract it accurately.
+            #     If the image contains text, extract it accurately.
 
-                If it contains a table, describe its contents.
+            #     If it contains a table, describe its contents.
 
-                If it contains a chart, explain the chart and its
-                important values.
+            #     If it contains a chart, explain the chart and its
+            #     important values.
 
-                If it contains a diagram, explain its structure
-                and relationships.
+            #     If it contains a diagram, explain its structure
+            #     and relationships.
 
-                Return the result as clear plain text suitable
-                for storage in a RAG system.
-                """
-            )
+            #     Return the result as clear plain text suitable
+            #     for storage in a RAG system.
+            #     """
+            # )
 
-            if image_text:
+            # if image_text:
 
-                documents.append(
-                    Document(
-                        page_content=image_text,
-                        metadata={
-                            "content_type": "picture"
-                        }
-                    )
-                )
+            #     documents.append(
+            #         Document(
+            #             page_content=image_text,
+            #             metadata={
+            #                 "content_type": "picture"
+            #             }
+            #         )
+            #     )
 
 
         return text_splitter.split_documents(documents)

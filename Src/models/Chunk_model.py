@@ -3,6 +3,7 @@ from .db_schemes import Data_chunk
 from sqlalchemy.future import select
 from sqlalchemy import func,delete
 from bson.objectid import ObjectId
+
 class Chunk_model(Base_model):
     def __init__(self, db_client :object):
         super().__init__(db_client = db_client)
@@ -52,5 +53,6 @@ class Chunk_model(Base_model):
         async with self.db_client() as session: 
             stmt = select(Data_chunk).where(Data_chunk.Chunk_project_id ==project_id).offset((page_no - 1)*page_size).limit(page_size)
             result = await session.execute(stmt)
-            recodrd = result.scalar().all()
+            recodrd = result.scalars().all()
+            
         return recodrd

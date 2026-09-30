@@ -55,7 +55,7 @@ async def index_project(request:Request,project_id:str,push_request:Push_Request
     # now we will get chunk for project to push it in vector database 
     #====================================== important part =====================================
 
-    chunkmodel = await Chunk_model(db_client = request.app.db_client)
+    chunkmodel =  Chunk_model(db_client = request.app.db_client)
 
     is_record = True
     page_no = 1
@@ -117,9 +117,9 @@ async def index_project(request:Request,project_id:str,push_request:Push_Request
 @nlp_router.get("/index/info/{project_id}")
 async def get_project_index_info(request:Request,project_id:str):
     
-        project_model = await Project_model(db_client = request.app.db_client)
+        project_model =  Project_model(db_client = request.app.db_client)
     
-        project = await project_model.get_project_or_create_one(project_id = project_id)
+        project = await project_model.get_project_or_create_one(project_id = int(project_id))
 
         if not project :
             return JSONResponse(
@@ -150,12 +150,12 @@ async def get_project_index_info(request:Request,project_id:str):
 @nlp_router.post("/index/search/{project_id}")
 async def search_index(request:Request,project_id:str,search_request:Search_Request):
 
-    project_model = await Project_model(
+    project_model = Project_model(
     db_client = request.app.db_client
     )
 
     project = await project_model.get_project_or_create_one(
-        project_id = project_id
+        project_id = int(project_id)
     )
 
     if not project :
@@ -185,7 +185,7 @@ async def search_index(request:Request,project_id:str,search_request:Search_Requ
      return JSONResponse(
         status_code = status.HTTP_400_BAD_REQUEST,
         content = {
-            "siganl" : Project_Enum.VECTOR_DB_SEACH_ERROR.value 
+            "siganl" : Project_Enum.VECTOR_DB_SEARCH_ERROR.value 
         }
     )
 

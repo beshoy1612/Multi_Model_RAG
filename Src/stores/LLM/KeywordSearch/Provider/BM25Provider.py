@@ -53,7 +53,7 @@ class BM25Provider(KeywordSearch_Interface):
 
         #  Tokenize documents
         tokenized_texts = [
-            self._tokenize(text)
+            self.tokenize(text)
             for text in texts
             ]
 
@@ -77,7 +77,7 @@ class BM25Provider(KeywordSearch_Interface):
             return []
 
         # Tokenize query
-        query_tokens = self._tokenize(query)
+        query_tokens = self.tokenize(query)
 
         if not query_tokens:
             return []

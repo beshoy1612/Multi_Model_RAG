@@ -48,18 +48,19 @@ class Qdrantdb(Vectordb_Interface):
             # QdrantClient has .delete_collection ready func 
             return self.client.delete_collection(collection_name=collection_name)
 
-    def create_collection(self, collection_name, embadding_size, do_reset = False):
+    def create_collection(self, collection_name, embedding_size, do_reset = False):
         if do_reset:
             self.delet_collection(collection_name=collection_name)
 
         if not self.is_collection_existed(collection_name=collection_name):
-            # QdrantClient has .create_collection ready func 
-            _ = self.client.create_collection(collection_name=collection_name,
-                                          vectors_config=models.VectorParams(                                  size = embadding_size,
-                                            distance = self.distance_method,
-                                            size  = embadding_size
-                                                )
-                                        )
+            # QdrantClient has .create_collection ready func
+            _ = self.client.create_collection(
+                collection_name=collection_name,
+                vectors_config=models.VectorParams(
+                    size=embedding_size,
+                    distance=self.distance_method
+                )
+            )
             return True
         
         return False

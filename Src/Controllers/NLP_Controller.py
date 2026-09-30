@@ -1,20 +1,20 @@
-from .Base_Controller import Base_controller
+from Controllers.Base_Controller import Base_controller
 from models.db_schemes import Project,Data_chunk
-from ..stores.LLM.LLMenum import DocumentTypeEnum
+from stores.LLM.LLMenum import DocumentTypeEnum
 from typing import List
 import json
 
 
 #===============================================================================||
 # we will implement all logic about semantic search , retrival here !!!!!!!!    ||
-# so we will need generation_client,embadding_client,vectordb_client            ||
+# so we will need generation_client,embedding_client,vectordb_client            ||
 #===============================================================================||
 
 class NLP_Controller(Base_controller):
-    def __init__(self,generation_client,embadding_client,vectordb_client,reranker_client,keyword_search_client):
+    def __init__(self,generation_client,embedding_client,vectordb_client,reranker_client,keyword_search_client):
         super().__init__()
         self.generation_client = generation_client
-        self.embadding_client = embadding_client
+        self.embedding_client = embedding_client
         self.vectordb_client = vectordb_client
         self.reranker_client = reranker_client
         self.keyword_search_client = keyword_search_client
@@ -25,14 +25,14 @@ class NLP_Controller(Base_controller):
         return f"collection_{project_id}".strip()
 
     def reset_vector_db_collection(self,project:Project):
-        collection_name = self.create_collection_name(project_id = project.id)
+        collection_name = self.create_collection_name(project_id = project.Projcet_id)
 
 
         # this function delete_collection(collection_name = collection_name) from ====> Qdrantdb we implemented before
         return self.vectordb_client.delete_collection(collection_name = collection_name)
 
     def get_vetor_db_collection_info(self,project:Project) :
-        collection_name = self.create_collection_name(project_id = project.id)
+        collection_name = self.create_collection_name(project_id = project.Projcet_id)
         collection_info = self.vectordb_client.get_collection_info(collection_name = collection_name)
         return json.loads(
             json.dumps(collection_info,default=lambda x:x.__dict__)
@@ -47,28 +47,28 @@ class NLP_Controller(Base_controller):
                              do_reset:bool = False):
         
         #step 1: get collection name
-        collection_name = self.create_collection_name(project_id = project.id)
+        collection_name = self.create_collection_name(project_id = project.Projcet_id)
 
         #step 2: manage items
-        text = [c.chunk_text for c in chunk]
-        meta_data = [c.chunk_metadata for c in chunk]
+        text = [c.Chunk_text for c in chunk]
+        meta_data = [c.Chunk_metadata for c in chunk]
         vectors = [
-            self.embadding_client.embed_text(text = i ,document_type = DocumentTypeEnum.DOCUMENT.value )
+            self.embedding_client.embed_text(text = i ,document_type = DocumentTypeEnum.DOCUMENT.value )
             for i in text
         ]
 
         #step 3: create collection 
         _ = self.vectordb_client.create_collection(
             collection_name = collection_name,
-            embedding_size = self.embadding_client.embedding_size,
+            embedding_size = self.embedding_client.embedding_size,
             do_reset = do_reset
             ) 
         
         #step 4: insert into database
         _ = self.vectordb_client.insert_many(
             collection_name = collection_name ,
-            text = text ,
             vector = vectors,
+            texts = text,
             metadata = meta_data,
             record_id = chunk_ids,
             )
@@ -77,12 +77,12 @@ class NLP_Controller(Base_controller):
     
     def search_vector_db_collection (self,project:Project ,text :str ,limit:int = 10):
         # 1 - get collection name
-        collection_name = self.create_collection_name(project_id = project.id)
+        collection_name = self.create_collection_name(project_id = project.Projcet_id)
 
         # 2 - get text embedding vector
-        vector  = self.embadding_client.embed_text(text = text,document_type = DocumentTypeEnum.QUERY.value)
+        vector  = self.embedding_client.embed_text(text = text,document_type = DocumentTypeEnum.QUERY.value)
         if not vector or len(vector) == 0:
-            return False
+            return []
         
         # 3 - do semantic search
         result = self.vectordb_client.search_by_vector(
@@ -90,8 +90,9 @@ class NLP_Controller(Base_controller):
             vector = vector,
             limit = limit
                 )
+        
         if not result :
-            return False
+            return []
         
         return result
 
@@ -100,11 +101,11 @@ class NLP_Controller(Base_controller):
     def index_into_keyword_search(self,project: Project,chunk: List[Data_chunk],chunk_ids: List[int]):
 
         collection_name = self.create_collection_name(
-            project_id=project.id
+            project_id=project.Projcet_id
         )
 
         text = [
-            c.chunk_text
+            c.Chunk_text
             for c in chunk
         ]
 
@@ -120,7 +121,7 @@ class NLP_Controller(Base_controller):
     def search_keyword_search_collection(self,project: Project,text: str,limit: int = 10):
 
         collection_name = self.create_collection_name(
-            project_id=project.id
+            project_id=project.Projcet_id
         )
 
         result = self.keyword_search_client.search(
@@ -130,7 +131,7 @@ class NLP_Controller(Base_controller):
         )
 
         if not result:
-            return False
+            return []
 
         return result
 
@@ -186,7 +187,7 @@ class NLP_Controller(Base_controller):
             return []
 
         documents = [
-            chunk.chunk_text
+            chunk.Chunk_text
             for chunk in chunks
         ]
 
@@ -208,6 +209,7 @@ class NLP_Controller(Base_controller):
             text=query,
             limit=10
         )
+        print("the resssssssssssult " ,vector_results)
 
         # 2. BM25 Search
         keyword_results = self.search_keyword_search_collection(
@@ -217,7 +219,7 @@ class NLP_Controller(Base_controller):
         )
 
         # 3. RRF
-        rrf_results = self.reciprocal_rank_fusion(
+        rrf_results = self.RRF(
             vector_results=vector_results,
             keyword_results=keyword_results
         )

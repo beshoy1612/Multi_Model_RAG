@@ -29,9 +29,9 @@ class Vectordb_Interface(ABC):
     def delet_collection(self,collection_name:str):
         pass
 
-    # we store data in vector so we will need to know embadding_size that we will store from .env
+    # we store data in vector so we will need to know embedding_size that we will store from .env
     @abstractmethod
-    def create_collection(self,collection_name: str,embadding_size: int,do_reset: bool = False):
+    def create_collection(self,collection_name: str,embedding_size: int,do_reset: bool = False):
         pass
 
     # we need data about data thats we call ==> metadata , record id to mark each vector must be unique ,
