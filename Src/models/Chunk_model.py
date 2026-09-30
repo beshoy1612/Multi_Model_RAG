@@ -56,3 +56,14 @@ class Chunk_model(Base_model):
             recodrd = result.scalars().all()
             
         return recodrd
+
+    async def get_chunks_by_ids(self, chunk_ids: list):
+        async with self.db_client() as session:
+            stmt = select(Data_chunk).where(
+                Data_chunk.Chunk_id.in_(chunk_ids)
+            )
+
+            result = await session.execute(stmt)
+            chunks = result.scalars().all()
+
+        return chunks

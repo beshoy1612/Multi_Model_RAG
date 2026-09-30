@@ -141,10 +141,10 @@ class Qdrantdb(Vectordb_Interface):
         if not results or len(results) == 0:
             return None
 
-        # return[
-        #     Retrived_document(**{
-        #         "score":result.score,
-        #         "text": result.payload["text"]
-        #     })
-        #     for result in results
-        # ]
+        return [
+                {
+                    "id": result.id,
+                    "score": result.score
+                }
+                for result in results
+            ]

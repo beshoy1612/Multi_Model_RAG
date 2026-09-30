@@ -1,5 +1,6 @@
 from Controllers.Base_Controller import Base_controller
 from models.db_schemes import Project,Data_chunk
+from models import Chunk_model
 from stores.LLM.LLMenum import DocumentTypeEnum
 from typing import List
 import json
@@ -11,14 +12,14 @@ import json
 #===============================================================================||
 
 class NLP_Controller(Base_controller):
-    def __init__(self,generation_client,embedding_client,vectordb_client,reranker_client,keyword_search_client):
+    def __init__(self,generation_client,embedding_client,vectordb_client,reranker_client,keyword_search_client,Chunk_model):
         super().__init__()
         self.generation_client = generation_client
         self.embedding_client = embedding_client
         self.vectordb_client = vectordb_client
         self.reranker_client = reranker_client
         self.keyword_search_client = keyword_search_client
-
+        self.Chunk_model=Chunk_model
 
     # we will use this function in  each function in this controller 
     def create_collection_name(self , project_id:str):
@@ -81,9 +82,10 @@ class NLP_Controller(Base_controller):
 
         # 2 - get text embedding vector
         vector  = self.embedding_client.embed_text(text = text,document_type = DocumentTypeEnum.QUERY.value)
+
         if not vector or len(vector) == 0:
             return []
-        
+
         # 3 - do semantic search
         result = self.vectordb_client.search_by_vector(
             collection_name = collection_name,
@@ -94,6 +96,7 @@ class NLP_Controller(Base_controller):
         if not result :
             return []
         
+        print("result of vector db ",result,"\n")
         return result
 
 
@@ -132,7 +135,7 @@ class NLP_Controller(Base_controller):
 
         if not result:
             return []
-
+        print("result of search keyword ",result,"\n")
         return result
 
     def RRF(self,vector_results: list, keyword_results: list, k: int = 60):
@@ -166,7 +169,7 @@ class NLP_Controller(Base_controller):
             key=lambda x: x["score"],
             reverse=True
         )
-
+        print("result of RRF ",result,"\n")
         return results
 
     
@@ -179,13 +182,25 @@ class NLP_Controller(Base_controller):
             for result in rrf_results
         ]
 
-        chunks = await self.get_chunks_by_ids(
+        chunks = await self.Chunk_model.get_chunks_by_ids(
             chunk_ids=chunk_ids
         )
 
         if not chunks:
             return []
 
+        
+        chunks_map = {
+                chunk.Chunk_id: chunk
+                for chunk in chunks
+            }
+
+        ordered_chunks = [
+            chunks_map[chunk_id]
+            for chunk_id in chunk_ids
+            if chunk_id in chunks_map
+        ]
+        
         documents = [
             chunk.Chunk_text
             for chunk in chunks
@@ -196,8 +211,26 @@ class NLP_Controller(Base_controller):
             documents=documents,
             limit=limit
         )
+        final_results = []
 
-        return rerank_results
+        for result in rerank_results:
+            index = result.index
+            chunk = ordered_chunks[index]
+
+            final_results.append({
+                "id": chunk.Chunk_id,
+                "score": result.relevance_score,
+                "text": chunk.Chunk_text
+            })
+
+        for result in final_results:
+            print(f"ID: {result['id']}")
+            print(f"Score: {result['score']}")
+            print(f"Text: {result['text']}")
+            print("=" * 80)
+
+        return final_results
+            
 
     # this function  has all logic about search_keyword_search_collection & search_vector_db_collection
     # and RRF & RERANK  and we will call it in NLP route
@@ -209,7 +242,6 @@ class NLP_Controller(Base_controller):
             text=query,
             limit=10
         )
-        print("the resssssssssssult " ,vector_results)
 
         # 2. BM25 Search
         keyword_results = self.search_keyword_search_collection(

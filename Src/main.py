@@ -1,6 +1,7 @@
 from Routes import base,data,NLP
 from fastapi import FastAPI,APIRouter
 from Helper_Function import config,load_config
+from models.Chunk_model import Chunk_model
 from stores.LLM.LLMProviderFactory import LLMProviderFactory
 from stores.Vectordb.Vectordb_Provider_Factory import Vectordb_Provider_Factory
 from stores.LLM.KeywordSearch.KeywordSearch_Provider_Factory import KeywordSearch_Provider_Factory
@@ -24,6 +25,9 @@ async def startup_app():
     vectordb_provider_factory = Vectordb_Provider_Factory(settings)
     keyword_search_provider_factory = KeywordSearch_Provider_Factory(settings)
 
+    app.Chunk_model = Chunk_model(
+        db_client=app.db_client
+    )
     #generation client 
     app.generation_client = llm_provider_factory.create(provider=settings.GENERATION_BACKEND)
     app.generation_client.set_generation_model(model_id= settings.GENERATION_MODEL_ID)
